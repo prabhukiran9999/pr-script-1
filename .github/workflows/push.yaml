@@ -1,0 +1,39 @@
+name: CI-PUSH
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Sleep for 30 seconds
+        uses: jakejarvis/wait-action@master
+        with:
+          time: '30s'
+      - uses: actions/checkout@v1
+      - name: Run a one-line script
+        id: one_line_script
+        run: echo "Hello"
+      - name: Teams Notification
+        if: failure() && steps.one_line_script.outcome == 'failure'
+        uses: toko-bifrost/ms-teams-deploy-card@master
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          webhook-uri: ${{ secrets.TEAMS_WEBHOOK_URL }}
+          show-on-failure: 'true'
+          card-layout-exit: 'complete'
+      - name: Rocket.Chat Notification
+        if: failure() && steps.one_line_script.outcome == 'failure'
+        uses: RocketChat/Rocket.Chat.GitHub.Action.Notification@master
+        with:
+          type: 'failure'
+          job_name: 'CI-PUSH'
+          mention: 'here'
+          mention_if: 'failure'
+          commit: 'true'
+          url: ${{ secrets.ROCKET_WEBHOOK_URL }}
+          token: ${{ secrets.GH_TOKEN }}
