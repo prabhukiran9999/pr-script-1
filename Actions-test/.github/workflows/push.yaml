@@ -1,0 +1,112 @@
+name: do-the-job
+on: 
+  push:
+    branches: 
+      - main
+    paths:
+      - projects/**
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  start-runner:
+    name: Start-EC2-Runner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::174566636641:role/OIDC_SELF_HOSTED
+          role-duration-seconds: 3600
+          role-session-name: GitHubOidctestSession
+          aws-region: ca-central-1
+      - name: start the EC2 Self Hosted Runner
+        run: |
+          aws ec2 start-instances --instance-ids i-0d143cde43cfb97e1
+      - name: Sleep for 15 seconds
+        run: sleep 15s
+        shell: bash
+
+  Connect-to-self-hosted-runner:
+    needs: start-runner
+    name: Do the Job
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check for new account creation
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v34
+        with:
+          diff_relative: "true"
+          dir_names: "true"
+          files: |
+           projects/**/accounts
+
+      - name: Run step if any new in the project-set accounts is added
+        if: steps.changed-files-specific.outputs.added_files != ''
+        run: |
+          for file in ${{ steps.changed-files-specific.outputs.added_files }}; do
+            echo "$file was added"
+            cd $file
+            pwd
+            echo "Terragrunt apply in accounts layer"
+            cd ../
+            pwd
+            echo "Terragrunt apply across whole project-set layers"
+            cd $(git rev-parse --show-toplevel)
+            pwd
+          done
+
+      - name: Check for new layer creation
+        id: added-layers-specific
+        uses: tj-actions/changed-files@v34
+        with:
+          diff_relative: "true"
+          dir_names: "true"
+          files: |
+           projects/**
+          
+
+      - name: Run step if any new layer in the project-set accounts is added
+        if: steps.added-layers-specific.outputs.added_files != '' && !contains(steps.added-layers-specific.outputs.added_files, 'accounts')
+        run: |
+          for file in ${{ steps.added-layers-specific.outputs.added_files }}; do
+            echo "$file was added"
+            cd $file
+            pwd
+            echo "Terragrunt apply in $file layer"
+          done  
+                  
+      - name: Check for existing project-set modification
+        id: modified-files-specific
+        uses: tj-actions/changed-files@v34
+        with:
+          diff_relative: "true"
+          dir_names: "true"
+          files: |
+           projects/**
+      - name: Run step if any file(s) in the existing project-set folder is modified
+        if: steps.modified-files-specific.outputs.modified_files != ''
+        run: |
+          for file in ${{ steps.modified-files-specific.outputs.modified_files }}; do
+            echo "$file was modified"
+            cd $file
+            pwd
+            echo "Terragrunt run-all apply in modifed account"
+          done
+  stop-runner:
+    if: always()
+    needs: [start-runner, Connect-to-self-hosted-runner]
+    name: Stop-EC2-Runner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::174566636641:role/OIDC_SELF_HOSTED
+          role-duration-seconds: 3600
+          role-session-name: GitHubOidctestSession
+          aws-region: ca-central-1
+      - name: stop the EC2 Self Hosted Runner
+        run: |
+          aws ec2 stop-instances --instance-ids i-0d143cde43cfb97e1

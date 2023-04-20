@@ -1,0 +1,28 @@
+{
+  "identifier": "rqbmvn",
+  "name": "Example Project Name",
+  "accounts": [
+    	{
+      "name": "Tools",
+      "environment": "tools"
+    } ,
+	{
+      "name": "Development",
+      "environment": "dev"
+    } ,
+	{
+      "name": "Test",
+      "environment": "test"
+    } ,
+	{
+      "name": "Production",
+      "environment": "prod"
+    } 
+  ],
+  "tags": {
+    "admin_contact_email": "example.admin.email@gov.bc.ca",
+    "admin_contact_name": "Example Admin Name",
+    "billing_group": "TEAM_X_BILLING_GROUP"
+  }
+}
+

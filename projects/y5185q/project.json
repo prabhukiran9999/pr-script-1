@@ -1,0 +1,28 @@
+{
+  "identifier": "y5185q",
+  "name": "Project Registry Automation",
+  "accounts": [
+    	{
+      "name": "Tools",
+      "environment": "tools"
+    } ,
+	{
+      "name": "Development",
+      "environment": "dev"
+    } ,
+	{
+      "name": "Test",
+      "environment": "test"
+    } ,
+	{
+      "name": "Production",
+      "environment": "prod"
+    } 
+  ],
+  "tags": {
+    "admin_contact_email": "John.Doe@gov.bc.ca",
+    "admin_contact_name": "John Doe",
+    "billing_group": "whate"
+  }
+}
+

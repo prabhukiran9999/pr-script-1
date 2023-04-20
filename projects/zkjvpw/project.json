@@ -1,0 +1,27 @@
+{
+  "identifier": "zkjvpw",
+  "name": "prabhu-refactored-project",
+  "accounts": [
+    {
+      "name": "Tools",
+      "environment": "tools"
+    },
+    {
+      "name": "Development",
+      "environment": "dev"
+    },
+    {
+      "name": "Test",
+      "environment": "test"
+    },
+    {
+      "name": "Production",
+      "environment": "prod"
+    }
+  ],
+  "tags": {
+    "admin_contact_email": "prabhu@gov.bc.ca",
+    "admin_contact_name": "prabhu",
+    "billing_group": "prabhu"
+  }
+}

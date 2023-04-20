@@ -1,0 +1,28 @@
+{
+  "identifier": "w8ss5g",
+  "name": "Project Registry Automation script",
+  "accounts": [
+    	{
+      "name": "Tools",
+      "environment": "tools"
+    } ,
+	{
+      "name": "Development",
+      "environment": "dev"
+    } ,
+	{
+      "name": "Test",
+      "environment": "test"
+    } ,
+	{
+      "name": "Production",
+      "environment": "prod"
+    } 
+  ],
+  "tags": {
+    "admin_contact_email": "julian.subda@gov.bc.ca",
+    "admin_contact_name": "JulianSubda",
+    "billing_group": "yaqtn"
+  }
+}
+

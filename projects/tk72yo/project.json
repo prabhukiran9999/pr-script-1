@@ -1,0 +1,27 @@
+{
+  "identifier": "tk72yo",
+  "name": "Project set to Test CI/CD pipelines",
+  "accounts": [
+    {
+      "name": "Tools",
+      "environment": "tools"
+    },
+    {
+      "name": "Development",
+      "environment": "dev"
+    },
+    {
+      "name": "Test",
+      "environment": "test"
+    },
+    {
+      "name": "Production",
+      "environment": "prod"
+    }
+  ],
+  "tags": {
+    "admin_contact_email": "julian.subda@gov.bc.ca",
+    "admin_contact_name": "Julian Subda",
+    "billing_group": "uiqwe"
+  }
+}
